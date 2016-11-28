@@ -2,6 +2,7 @@
 <html ng-app="ToDoList">
 
 <head>
+
     <meta charset="UTF-8">
     <title>To do List</title>
     <link rel ="stylesheet" type="text/css" href="bootstrap/css/bootstrap.css"/>
@@ -29,10 +30,12 @@
 
     </style>
     <div align="center"><h1>To do List</h1></div>
+
     <script src="angular.js"></script>
     <script>
         angular.module("ToDoList",[]);
         angular.module("ToDoList").controller("ToDoListCtrl",function ($scope) {
+
             $scope.count = 0;
 
             $scope.tarefas = [
@@ -58,13 +61,24 @@
                 if($scope.tarefas.length == 0){
                     return 0;
                 }
-               return 100*$scope.count / $scope.tarefas.length;
+
+                if(100*$scope.count / $scope.tarefas.length <= 100){
+                    return 100*$scope.count / $scope.tarefas.length;
+                }else {
+                    return 100;
+                }
             }
             $scope.limparTarefas = function(){
                 $scope.tarefas.length =0;
             }
-            $scope.tirarTarefa = function () {
+            $scope.tirarTarefa = function (atividades) {
                 $scope.tarefas.shift();
+                if($scope.count > 0){
+                    $scope.count --;
+                }
+
+                delete $scope.atividades;
+
             }
             $scope.incompletas = function () {
                 if($scope.count <= $scope.tarefas.length){
@@ -87,36 +101,30 @@
             </thead>
             <tbody>
                 <tr ng-class="{'selecionado':atividades.selecionado}" ng-repeat="atividades in tarefas">
-                    <td><div align="center"> <input type="checkbox" ng-click="contar()"  ng-model="atividades.selecionado"> </div></td>
+                    <td><div align="center"> <input type="checkbox" ng-click="contar()" ng-model="atividades.selecionado"> </div></td>
                     <td><div align="center"> {{atividades.tarefa}}</div></td>
                     <td><div align="center"><button class="checkbox" ng-click="tirarTarefa()"></div></td>
 
                 </tr>
             </tbody>
         </table>
+
         <form name="formItem">
             <h3><br/>Porcentagem de taferas concluidas: {{realizada()}} %
                 </br></h3>
 
-            <input type="text" ng-model="atividades.tarefa" name = "tarefa" placeholder="Tarefa" ng-minlength="10" ng-required="true">
+            <input type="text" ng-model="atividades.tarefa" name = "tarefa" placeholder="Digite a tarefa" ng-minlength="10" ng-required="true">
+            <button class="active" ng-click="AdicionarTarefa(atividades)" ng-disabled="formItem.$invalid">
+                Adicionar Tarefa</button>
+
+            <button class="active" ng-click="limparTarefas()"> Limpar Tarefas</button>
 
             <div ng-show="formItem.tarefa.$error.minlength" class="alert alert-danger">
                 O mínimo é de 10 caracteres!
-
-            </div>
-            <div ng-show="formItem.tarefa.$error.required" class="alert-danger">
-                Por favor, preencha o nome da tarefa!
             </div>
 
         </form>
-        <br/>
-        <button class="active" ng-click="AdicionarTarefa(atividades)" ng-disabled="formItem.$invalid">
-            Adicionar Tarefa</button>
-        <button class="active" ng-click="limparTarefas()"> Limpar Tarefas</button>
-
-
-        <td>Tarefas para serem realizadas:{{incompletas()}}</td>
-        </br>
+        <h4><td>Tarefas para serem realizadas:{{incompletas()}}</td></h4>
     </div>
 </body>
 </html>
