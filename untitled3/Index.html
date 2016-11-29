@@ -26,7 +26,9 @@
         .table{
             margin-top: 20px;
             color: black;
+
         }
+
 
     </style>
     <div align="center"><h1>To do List</h1></div>
@@ -36,54 +38,51 @@
         angular.module("ToDoList",[]);
         angular.module("ToDoList").controller("ToDoListCtrl",function ($scope) {
 
-            $scope.count = 0;
-
             $scope.tarefas = [
                 {tarefa:"Estudar para SI"},
                 {tarefa:"Jogar Futebol"},
                 {tarefa:"Lavar o Carro"}
             ];
+            $scope.realidas = [];
 
             $scope.AdicionarTarefa = function(atividades) {
                 $scope.tarefas.push(angular.copy(atividades));
                 delete $scope.atividades;
 
             }
-            $scope.contar = function () {
-                if($scope.count < $scope.tarefas.length){
-                    $scope.count ++;
+            $scope.marcarComoRealizada = function (atividades) {
+                if($scope.realidas.indexOf(atividades) == -1){
+                    $scope.realidas.push(atividades);
                 }
-            }
-            $scope.decrementaCount = function () {
-                $scope.count --;
-            }
-            $scope.realizada = function () {
-                if($scope.tarefas.length == 0){
-                    return 0;
+                else{
+                    $scope.realidas.shift();
                 }
+                delete $scope.atividades;
+            }
 
-                if(100*$scope.count / $scope.tarefas.length <= 100){
-                    return 100*$scope.count / $scope.tarefas.length;
-                }else {
+            $scope.realizada = function () {
+                if($scope.realidas > $scope.tarefas){
+                    return 100;
+                }else if($scope.tarefas.length == 0){
                     return 100;
                 }
+                return 100 * $scope.realidas.length / $scope.tarefas.length;
             }
-            $scope.limparTarefas = function(){
-                $scope.tarefas.length =0;
-            }
-            $scope.tirarTarefa = function (atividades) {
-                $scope.tarefas.shift();
-                if($scope.count > 0){
-                    $scope.count --;
-                }
 
-                delete $scope.atividades;
+            $scope.limparTarefas = function(tarefas){
+                $scope.tarefas = $scope.tarefas.filter(function (tarefa) {
+
+                });
+            }
+            $scope.tirarTarefa = function (tarefas) {
+                $scope.tarefas.shift();
+
 
             }
             $scope.incompletas = function () {
-                if($scope.count <= $scope.tarefas.length){
-                return $scope.tarefas.length - $scope.count;
-            }else{
+                if($scope.tarefas.length - $scope.realidas.length > 0){
+                    return $scope.tarefas.length - $scope.realidas.length;
+                }else{
                     return 0;
                 }
             }
@@ -101,30 +100,34 @@
             </thead>
             <tbody>
                 <tr ng-class="{'selecionado':atividades.selecionado}" ng-repeat="atividades in tarefas">
-                    <td><div align="center"> <input type="checkbox" ng-click="contar()" ng-model="atividades.selecionado"> </div></td>
+                    <td><div align="center"> <input type="checkbox" ng-click="marcarComoRealizada(atividades)" ng-model="atividades.selecionado"> </div></td>
                     <td><div align="center"> {{atividades.tarefa}}</div></td>
-                    <td><div align="center"><button class="checkbox" ng-click="tirarTarefa()"></div></td>
+                    <td><div align="center"><button class="checkbox" ng-click="tirarTarefa(tarefas)"></div></td>
 
                 </tr>
             </tbody>
         </table>
 
         <form name="formItem">
-            <h3><br/>Porcentagem de taferas concluidas: {{realizada()}} %
-                </br></h3>
+            <br/> <div class="progress">
+            <div class="progress-bar-success" role="progressbar" style="width:{{realizada()}}%">
+                Atividades realizadas:{{realizada()}}%;
+            </div>
+        </div>
+                </br>
 
             <input type="text" ng-model="atividades.tarefa" name = "tarefa" placeholder="Digite a tarefa" ng-minlength="10" ng-required="true">
             <button class="active" ng-click="AdicionarTarefa(atividades)" ng-disabled="formItem.$invalid">
                 Adicionar Tarefa</button>
 
-            <button class="active" ng-click="limparTarefas()"> Limpar Tarefas</button>
+            <button class="active" ng-click="limparTarefas(tarefas)"> Limpar Tarefas</button>
 
             <div ng-show="formItem.tarefa.$error.minlength" class="alert alert-danger">
                 O mínimo é de 10 caracteres!
             </div>
 
         </form>
-        <h4><td>Tarefas para serem realizadas:{{incompletas()}}</td></h4>
+        <h4><td>Atividades para serem realizadas:{{incompletas()}}</td></h4>
     </div>
 </body>
 </html>
