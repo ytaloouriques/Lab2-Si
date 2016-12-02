@@ -61,7 +61,7 @@
                 delete $scope.atividades;
             }
 
-            $scope.porcentagemDeTarefasFeitas = function () {
+            $scope.realizada = function () {
                 if($scope.realidas > $scope.tarefas){
                     return 100;
                 }else if($scope.tarefas.length == 0){
@@ -87,6 +87,9 @@
                     return 0;
                 }
             }
+            $scope.mudarCor = function(){
+
+            }
         })
     </script>
 </head>
@@ -111,7 +114,7 @@
 
         <form name="formItem">
             <br/> <div class="progress">
-            <div class="progress-bar-success" role="progressbar" style="width:{{porcentagemDeTarefasFeitas()}}%">
+            <div class="progress-bar-success" role="progressbar" style="width:{{realizada()}}%">
                 Atividades realizadas:{{realizada()}}%;
             </div>
         </div>
@@ -126,6 +129,5 @@
         </form>
         <h4><td>Atividades para serem realizadas:{{incompletas()}}</td></h4>
     </div>
-
 </body>
 </html>
