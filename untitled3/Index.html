@@ -26,9 +26,10 @@
         .table{
             margin-top: 20px;
             color: black;
-
         }
-
+        body{
+            background-color: inherit;
+        }
 
     </style>
     <div align="center"><h1>To do List</h1></div>
@@ -55,12 +56,12 @@
                     $scope.realidas.push(atividades);
                 }
                 else{
-                    $scope.realidas.shift();
+                    $scope.realidas.pop();
                 }
                 delete $scope.atividades;
             }
 
-            $scope.realizada = function () {
+            $scope.porcentagemDeTarefasFeitas = function () {
                 if($scope.realidas > $scope.tarefas){
                     return 100;
                 }else if($scope.tarefas.length == 0){
@@ -110,24 +111,21 @@
 
         <form name="formItem">
             <br/> <div class="progress">
-            <div class="progress-bar-success" role="progressbar" style="width:{{realizada()}}%">
+            <div class="progress-bar-success" role="progressbar" style="width:{{porcentagemDeTarefasFeitas()}}%">
                 Atividades realizadas:{{realizada()}}%;
             </div>
         </div>
                 </br>
 
-            <input type="text" ng-model="atividades.tarefa" name = "tarefa" placeholder="Digite a tarefa" ng-minlength="10" ng-required="true">
-            <button class="active" ng-click="AdicionarTarefa(atividades)" ng-disabled="formItem.$invalid">
+            <input type="text" ng-model="atividades.tarefa" name = "tarefa" placeholder="Digite a atividade">
+            <button class="active" ng-click="AdicionarTarefa(atividades)">
                 Adicionar Tarefa</button>
 
             <button class="active" ng-click="limparTarefas(tarefas)"> Limpar Tarefas</button>
 
-            <div ng-show="formItem.tarefa.$error.minlength" class="alert alert-danger">
-                O mínimo é de 10 caracteres!
-            </div>
-
         </form>
         <h4><td>Atividades para serem realizadas:{{incompletas()}}</td></h4>
     </div>
+
 </body>
 </html>
